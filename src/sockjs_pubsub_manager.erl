@@ -25,7 +25,10 @@ start_link([Name]) ->
 	gen_server:start_link({local, Name}, ?MODULE, [Name], []).
 
 init([Name]) ->
-	ets:new(Name, [named_table, private]),
+	ets:new(Name, [
+		named_table, 
+		private
+	]),
 	{ok, #state{name = Name}}.
 
 handle_call(_Request, _From, State) ->
@@ -34,15 +37,17 @@ handle_call(_Request, _From, State) ->
 handle_cast({publish, Channel, Message}, State) ->
 	{ok, Tid} = get_tid(Channel, State),
 	EncodedMessage = mochijson2_fork:encode(Message),
-	ets:foldl(fun(Conn, _Acc) ->
-		{sockjs_session,{Pid, _}} = Conn,
-		case is_process_alive(Pid) of
-			true ->
-				sockjs:send(EncodedMessage, Conn);
-			false ->
-				ets:delete_object(Tid, Conn)
-		end
-	end, ok, Tid),
+	spawn(fun() ->
+		ets:foldl(fun(Conn, _Acc) ->
+			{sockjs_session,{Pid, _}} = Conn,
+			case is_process_alive(Pid) of
+				true ->
+					sockjs:send(EncodedMessage, Conn);
+				false ->
+					ets:delete_object(Tid, Conn)
+			end
+		end, ok, Tid)
+	end),
 	{noreply, State};
 
 handle_cast({subscribe, Channel, Conn}, State) ->
@@ -72,7 +77,10 @@ get_tid(Channel, State) ->
 		[{_Channel, Tid}] ->
 			{ok, Tid};
 		[] ->
-			NewTid = ets:new(channel, [private]),
+			NewTid = ets:new(channel, [
+				public,
+				{read_concurrency, true}
+			]),
 			ets:insert(?NAME, {Channel, NewTid}),
 			{ok, NewTid}
 	end.
