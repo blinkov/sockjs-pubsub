@@ -1,7 +1,7 @@
 sockjs-pubsub
 =============
 
-Publish/Subscribe for [SockJS](https://github.com/sockjs/sockjs-erlang)
+Minimalistic Publish/Subscribe for [SockJS](https://github.com/sockjs/sockjs-client) and [sockjs-erlang](https://github.com/blinkov/sockjs-erlang)
 
 ## Features
 * No history or persistance, for realtime messaging only
@@ -10,7 +10,7 @@ Publish/Subscribe for [SockJS](https://github.com/sockjs/sockjs-erlang)
 
 ## Public API
 
-		sps:start().
+    sps:start().
     sps:subscribe(Channel, Conn).
     sps:unsubscribe(Channel, Conn).
     sps:publish(Channel, Message).
