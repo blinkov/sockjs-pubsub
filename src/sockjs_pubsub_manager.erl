@@ -36,8 +36,8 @@ handle_call(_Request, _From, State) ->
 
 handle_cast({publish, Channel, Message}, State) ->
 	{ok, Tid} = get_tid(Channel, State),
-	EncodedMessage = mochijson2_fork:encode(Message),
 	spawn(fun() ->
+		EncodedMessage = mochijson2_fork:encode(Message),
 		ets:foldl(fun(Conn, _Acc) ->
 			{sockjs_session,{Pid, _}} = Conn,
 			case is_process_alive(Pid) of
