@@ -35,7 +35,13 @@ handle_cast({publish, Channel, Message}, State) ->
 	{ok, Tid} = get_tid(Channel, State),
 	EncodedMessage = mochijson2_fork:encode(Message),
 	ets:foldl(fun(Conn, _Acc) ->
-		sockjs:send(EncodedMessage, Conn)
+		{sockjs_session,{Pid, _}} = Conn,
+		case is_process_alive(Pid) of
+			true ->
+				sockjs:send(EncodedMessage, Conn);
+			false ->
+				ets:delete_object(Tid, Conn)
+		end
 	end, ok, Tid),
 	{noreply, State};
 
