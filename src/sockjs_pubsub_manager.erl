@@ -44,6 +44,11 @@ handle_cast({subscribe, Channel, Conn}, State) ->
 	ets:insert(Tid, Conn),
 	{noreply, State};
 
+handle_cast({unsubscribe, Channel, Conn}, State) ->
+	{ok, Tid} = get_tid(Channel, State),
+	ets:delete(Tid, Conn),
+	{noreply, State};
+
 handle_cast(_Msg, State) ->
 	{noreply, State}.
 
