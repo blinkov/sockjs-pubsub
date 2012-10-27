@@ -1,0 +1,11 @@
+{application, sockjs_pubsub, [
+	{description, "Publish/Subscribe for SockJS"},
+	{vsn, "0.1"},
+	{modules, []},
+	{registered, []},
+	{applications, [
+		kernel,
+		stdlib
+	]},
+	{env, []}
+]}.
