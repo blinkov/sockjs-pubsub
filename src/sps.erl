@@ -23,7 +23,8 @@ subscribe(Channel, Conn) ->
 		sockjs_pubsub_util:all_nodes(),
 		sockjs_pubsub_util:get_manager_atom(Channel),
 		{subscribe, Channel, Conn}
-	).
+	),
+	ok.
 
 -spec publish(Channel :: binary(), Message :: any()) -> ok.
 publish(Channel, Message) ->
@@ -31,5 +32,6 @@ publish(Channel, Message) ->
 		sockjs_pubsub_util:all_nodes(),
 		sockjs_pubsub_util:get_manager_atom(Channel),
 		{publish, Channel, Message}
-	).
+	), 
+	ok.
 	
