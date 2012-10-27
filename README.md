@@ -10,7 +10,7 @@ Publish/Subscribe for [SockJS](https://github.com/sockjs/sockjs-erlang)
 
 ## Public API
 
-		sps:start().
+    sps:start().
     sps:subscribe(Channel, Conn).
     sps:unsubscribe(Channel, Conn).
     sps:publish(Channel, Message).
