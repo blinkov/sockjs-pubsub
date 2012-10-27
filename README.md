@@ -1,7 +1,7 @@
 sockjs-pubsub
 =============
 
-Minimalistic Publish/Subscribe for [SockJS](https://github.com/sockjs/sockjs-erlang)
+Minimalistic Publish/Subscribe for [SockJS](https://github.com/sockjs/sockjs-client) and [sockjs-erlang](https://github.com/blinkov/sockjs-erlang)
 
 ## Features
 * No history or persistance, for realtime messaging only
