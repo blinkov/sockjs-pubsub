@@ -23,6 +23,7 @@ Minimalistic Publish/Subscribe for [SockJS](https://github.com/sockjs/sockjs-cli
 * Binary channels are mapped to respective manager with **hash** function *(zlib:crc2/2)*.
 * On subscribe/unsubscribe Conn is passed to local manager to be stored in **ETS table**. Each channel has it's own unnamed table. Table ids are looked up via private ETS master-table.
 * On publish Message is **broadcasted** to respective manager on each connected erlang node with *gen_server:abcast/2*. Manager determines table id for channel and spawns short-lived process that will JSON-encode it and broadcast to all connections in channel ETS table. If this process stumbles upon dead connection it removes it.
+* Optional **deflate** message support *(in sps:subscribe/3 specify third argument, Deflate, as true)*. To decode on client side you need to apply [base64:decode](http://github.com/carlo/jquery-base64) followed by [zlib inflate](https://github.com/dankogai/js-deflate).
 
 ## Alternatives
 * [RabbitMQ](http://www.rabbitmq.com/) - separate message passing service with advanced features like clustering, persistance and acknowledgements. Recommended if messages are important and shouldn't be lost.
