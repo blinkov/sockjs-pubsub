@@ -27,4 +27,4 @@ Minimalistic Publish/Subscribe for [SockJS](https://github.com/sockjs/sockjs-cli
 ## Alternatives
 * [RabbitMQ](http://www.rabbitmq.com/) - separate message passing service with advanced features like clustering, persistance and acknowledgements. Recommended if messages are important and shouldn't be lost.
 * [Distributed Pub/Sub](https://github.com/doubleyou/dps) - simple publish/subscribe with message history and asynchronous replication between Erlang nodes.
-* [sockjs-multiplex](https://github.com/blinkov/sockjs-erlang/blob/master/src/sockjs_multiplex.erl) - part of sockjs-erlang that can do something similar with predefined channels with customized handlers and only within one Erlang node.
+* [sockjs-multiplex](https://github.com/blinkov/sockjs-erlang/blob/master/src/sockjs_multiplex.erl) - part of sockjs-erlang that can do something similar with predefined channels and customized handlers, only within one Erlang node.

@@ -38,21 +38,27 @@ handle_cast({publish, Channel, Message}, State) ->
 	{ok, Tid} = get_tid(Channel, State),
 	spawn(fun() ->
 		EncodedMessage = mochijson2_fork:encode(Message),
-		ets:foldl(fun(Conn, _Acc) ->
+		DeflatedMessage = base64:encode(zlib:zip(EncodedMessage)),
+		ets:foldl(fun({Conn, Deflate}, _Acc) ->
 			{sockjs_session,{Pid, _}} = Conn,
 			case is_process_alive(Pid) of
 				true ->
-					sockjs:send(EncodedMessage, Conn);
+					case Deflate of
+						true ->
+							sockjs:send(DeflatedMessage, Conn);
+						false ->
+							sockjs:send(EncodedMessage, Conn)
+					end;
 				false ->
-					ets:delete_object(Tid, Conn)
+					ets:delete(Tid, Conn)
 			end
 		end, ok, Tid)
 	end),
 	{noreply, State};
 
-handle_cast({subscribe, Channel, Conn}, State) ->
+handle_cast({subscribe, Channel, Conn, Deflate}, State) ->
 	{ok, Tid} = get_tid(Channel, State),
-	ets:insert(Tid, Conn),
+	ets:insert(Tid, {Conn, Deflate}),
 	{noreply, State};
 
 handle_cast({unsubscribe, Channel, Conn}, State) ->

@@ -3,7 +3,7 @@
 
 -export([start/0, stop/0]).
 -export([
-	subscribe/2,
+	subscribe/2, subscribe/3,
 	unsubscribe/2,
 	publish/2
 ]).
@@ -20,14 +20,21 @@ stop() ->
 
 -spec subscribe(Channels :: binary() | [binary()],
 	Conn :: conn()) -> ok.
-subscribe(Channels, Conn) when is_list(Channels) ->
-	[subscribe(Channel, Conn) || Channel <- Channels],
+subscribe(Channels, Conn) ->
+	subscribe(Channels, Conn, false).
+
+-spec subscribe(Channels :: binary() | [binary()],
+	Conn :: conn(), Deflate :: boolean()) -> ok.
+subscribe(Channels, Conn, Deflate) 
+	when is_list(Channels) and is_boolean(Deflate) ->
+	[subscribe(Channel, Conn, Deflate) || Channel <- Channels],
 	ok;
 
-subscribe(Channel, Conn) ->
+subscribe(Channel, Conn, Deflate)
+	when is_boolean(Deflate) ->
 	gen_server:cast(
 		sockjs_pubsub_util:get_manager_atom(Channel),
-		{subscribe, Channel, Conn}
+		{subscribe, Channel, Conn, Deflate}
 	).
 
 -spec unsubscribe(Channels :: binary() | [binary()],
