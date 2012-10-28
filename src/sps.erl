@@ -18,14 +18,24 @@ start() ->
 stop() ->
 	application:stop(sockjs_pubsub).
 
--spec subscribe(Channel :: binary(), Conn :: conn()) -> ok.
+-spec subscribe(Channels :: binary() | [binary()],
+	Conn :: conn()) -> ok.
+subscribe(Channels, Conn) when is_list(Channels) ->
+	[subscribe(Channel, Conn) || Channel <- Channels],
+	ok;
+
 subscribe(Channel, Conn) ->
 	gen_server:cast(
 		sockjs_pubsub_util:get_manager_atom(Channel),
 		{subscribe, Channel, Conn}
 	).
 
--spec unsubscribe(Channel :: binary(), Conn :: conn()) -> ok.
+-spec unsubscribe(Channels :: binary() | [binary()],
+	Conn :: conn()) -> ok.
+unsubscribe(Channels, Conn) when is_list(Channels) ->
+	[unsubscribe(Channel, Conn) || Channel <- Channels],
+	ok;
+
 unsubscribe(Channel, Conn) ->
 	gen_server:cast(
 		sockjs_pubsub_util:get_manager_atom(Channel),
